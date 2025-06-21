@@ -1,0 +1,26 @@
+name: Daily Commit for DevSync
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # once per day
+  workflow_dispatch:
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Make daily commit - 25ds1000071@ds.study.iitm.ac.in
+        run: |
+          echo "Automated commit at $(date)" >> daily-log.txt
+          git config --global user.name "DevSync Bot"
+          git config --global user.email "25ds1000071@ds.study.iitm.ac.in"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git add .
+          git commit -m "Daily automated commit" || echo "Nothing to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
